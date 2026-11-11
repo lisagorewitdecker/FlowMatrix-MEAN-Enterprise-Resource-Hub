@@ -2,7 +2,7 @@
 
 FlowMatrix is an enterprise resource hub built with the MEAN stack. It brings project management, analytics and key performance indicators (KPIs), and a Kanban board together in one application.
 
-## Repository structure
+## Repository Structure
 
 ```text
 flowmatrix/
@@ -44,6 +44,7 @@ flowmatrix/
 ```
 
 The frontend keeps Angular components, auth pages, guards, interceptors, services, and the standalone route list in `frontend/src/app/`. Application bootstrap and the root component live directly under `frontend/src/`. `frontend/src/app.config.ts` registers routes from `frontend/src/app/app.routes.ts`. The backend keeps API code and tests under `backend/src/`. Supporting lockfiles, TypeScript settings, styles, assets, and SSR test files remain alongside their respective workspaces.
+The frontend keeps Angular components, auth pages, guards, interceptors, services, and the standalone route list in `frontend/src/app/`; application bootstrap and the root component live directly under `frontend/src/`. `frontend/src/app.config.ts` registers routes from `frontend/src/app/app.routes.ts`. The backend keeps API code and tests under `backend/src/`. Supporting lockfiles, TypeScript settings, styles, assets, and SSR test files remain alongside their respective workspaces.
 
 ## Development
 
@@ -65,7 +66,7 @@ npm --prefix backend start
 
 The API listens on port `5000` by default and requires MongoDB. Angular proxies `/api` requests to `http://localhost:5000` through `frontend/proxy.conf.json`; this proxy is for local development only. The SSR server accepts `localhost` and `127.0.0.1` by default; configure trusted production hostnames in `frontend/angular.json`. The compose file is present but is not documented as a runnable deployment configuration because its referenced container setup is incomplete.
 
-## Build and tests
+## Build and Tests
 
 - `npm --prefix frontend run build` builds the Angular browser and SSR bundles.
 - `npm --prefix frontend test` runs Angular component and HTTP service tests.
@@ -73,7 +74,7 @@ The API listens on port `5000` by default and requires MongoDB. Angular proxies 
 - `npm --prefix backend run build` compiles the API into `backend/dist`.
 - `npm --prefix backend test` runs the Jest API, model, route, server, and in-memory MongoDB integration tests.
 
-## System architecture
+## System Architecture
 
 ```mermaid
 flowchart TD
@@ -95,6 +96,7 @@ flowchart TD
         AnalytCtrl[Faceted Analytics Controller]
         AuthCtrl[Auth Controller]
 
+        
         AuthMid --> ProjCtrl
         AuthMid --> AnalytCtrl
         AuthMid --> AuthCtrl
@@ -110,3 +112,8 @@ flowchart TD
     AnalytCtrl -->|$facet Aggregations| Mongo
     AuthCtrl -->|Bcrypt & Refresh Tokens| Mongo
 ```
+    Interceptors -->|Bearer JWT / API Calls| Nginx
+    Nginx -->|Reverse Proxy :5000| AuthMid
+    ProjCtrl -->|CRUD Operations| Mongo
+    AnalytCtrl -->|\$facet Aggregations| Mongo
+    AuthCtrl -->|Bcrypt & Refresh Tokens| Mongo
