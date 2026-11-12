@@ -1,0 +1,28 @@
+openapi: 3.0.0
+info:
+  title: FlowMatrix Enterprise API
+  version: 1.0.0
+  description: RESTful API for enterprise project portfolio tracking and analytics.
+paths:
+  /api/analytics:
+    get:
+      summary: Get executive KPIs and portfolio aggregation
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Aggregated portfolio metrics
+  /api/projects:
+    get:
+      summary: List projects
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Array of projects
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
