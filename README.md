@@ -61,9 +61,13 @@ In a separate terminal, install backend dependencies, copy the safe environment 
 ```bash
 npm --prefix backend install
 cp backend/.env.example backend/.env
+openssl rand -base64 32
+openssl rand -base64 32
 npm --prefix backend run build
 npm --prefix backend start
 ```
+
+Set the two generated values as distinct `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` values in `backend/.env`. Do not commit this local file.
 
 The API listens on port `5000` by default and requires MongoDB. Angular proxies `/api` requests to `http://localhost:5000` through `frontend/proxy.conf.json`; this proxy is for local development only. The SSR server accepts `localhost` and `127.0.0.1` by default; configure trusted production hostnames in `frontend/angular.json`. The compose file is present but is not documented as a runnable deployment configuration because its referenced container setup is incomplete.
 
