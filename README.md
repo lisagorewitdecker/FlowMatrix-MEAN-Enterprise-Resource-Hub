@@ -45,7 +45,6 @@ flowmatrix/
 └── README.md
 ```
 
-The frontend keeps Angular components, auth pages, guards, interceptors, services, and the standalone route list in `frontend/src/app/`. Application bootstrap and the root component live directly under `frontend/src/`. `frontend/src/app.config.ts` registers routes from `frontend/src/app/app.routes.ts`. The backend keeps API code and tests under `backend/src/`. Supporting lockfiles, TypeScript settings, styles, assets, and SSR test files remain alongside their respective workspaces.
 The frontend keeps Angular components, auth pages, guards, interceptors, services, and the standalone route list in `frontend/src/app/`; application bootstrap and the root component live directly under `frontend/src/`. `frontend/src/app.config.ts` registers routes from `frontend/src/app/app.routes.ts`. The backend keeps API code and tests under `backend/src/`. Supporting lockfiles, TypeScript settings, styles, assets, and SSR test files remain alongside their respective workspaces.
 
 ## Development
