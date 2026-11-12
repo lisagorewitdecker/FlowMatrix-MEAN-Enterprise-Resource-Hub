@@ -1,0 +1,53 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        if: hashFiles('backend/package.json') != '' && hashFiles('backend/package-lock.json') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      - name: Install backend dependencies
+        if: hashFiles('backend/package.json') != '' && hashFiles('backend/package-lock.json') != ''
+        run: cd backend && npm ci
+      - name: Test backend
+        if: hashFiles('backend/package.json') != '' && hashFiles('backend/package-lock.json') != ''
+        run: cd backend && npm test -- --coverage
+      - name: Skip backend tests when workspace is unavailable
+        if: hashFiles('backend/package.json') == '' || hashFiles('backend/package-lock.json') == ''
+        run: echo "Skipping backend tests because backend/package.json or backend/package-lock.json is missing."
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        if: hashFiles('frontend/package.json') != '' && hashFiles('frontend/package-lock.json') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend dependencies
+        if: hashFiles('frontend/package.json') != '' && hashFiles('frontend/package-lock.json') != ''
+        run: cd frontend && npm ci
+      - name: Build frontend
+        if: hashFiles('frontend/package.json') != '' && hashFiles('frontend/package-lock.json') != ''
+        run: cd frontend && npm run build -- --configuration production
+      - name: Skip frontend build when workspace is unavailable
+        if: hashFiles('frontend/package.json') == '' || hashFiles('frontend/package-lock.json') == ''
+        run: echo "Skipping frontend build because frontend/package.json or frontend/package-lock.json is missing."
