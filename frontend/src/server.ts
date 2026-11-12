@@ -29,10 +29,6 @@ app.use('/api', (clientReq, clientRes) => {
       },
     },
     (proxyRes) => {
-      proxyRes.on('error', (err) => {
-        console.error('API Proxy Response Error:', err);
-        clientRes.destroy();
-      });
       clientRes.writeHead(proxyRes.statusCode || 500, proxyRes.headers);
       proxyRes.pipe(clientRes, { end: true });
     }
