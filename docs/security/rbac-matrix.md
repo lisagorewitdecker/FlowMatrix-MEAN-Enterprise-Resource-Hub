@@ -1,11 +1,15 @@
-# Security Architecture & RBAC Matrix
+# Planned Security Policy & RBAC Matrix
+
+This document describes intended security controls and endpoint permissions. They are not implemented or enforced in this checkout; do not rely on the token lifetimes, cookie protections, or role permissions below as current guarantees.
 
 ## Token Management Strategy
-* **Access Tokens:** Short-lived JWTs (15-minute expiry) signed with HMAC-SHA256, held in Angular signals and memory.
-* **Refresh Tokens:** Long-lived JWTs (7-day expiry) persisted in `httpOnly`, `sameSite=Lax`, `secure` cookies to protect against cross-site scripting (XSS) extraction.
-* **Rotation:** Automated interceptor (`auth.interceptor.ts`) intercepts `401 Unauthorized` responses and exchanges the refresh cookie for a fresh access token before retrying failed requests.
+* **Access Tokens:** The planned policy is to use short-lived JWTs (15-minute expiry) signed with HMAC-SHA256 and held in Angular signals and memory.
+* **Refresh Tokens:** The planned policy is to use long-lived JWTs (7-day expiry) persisted in `httpOnly`, `sameSite=Lax`, `secure` cookies.
+* **Rotation:** The planned frontend interceptor will handle `401 Unauthorized` responses by exchanging the refresh cookie for a fresh access token before retrying failed requests.
 
 ## Role-Based Access Control (RBAC) Matrix
+
+The table lists planned permissions, not permissions currently enforced by the application.
 
 | Endpoint | Method | Permitted Roles | Description |
 | :--- | :--- | :--- | :--- |
