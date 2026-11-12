@@ -1,33 +1,32 @@
-import { Schema, model, Document, Model } from 'mongoose';
-import bcrypt from 'bcryptjs';
+import { describe, expect, it } from '@jest/globals';
+import type { AddressInfo } from 'node:net';
+import { createApp } from '../app';
 
-export interface IUser extends Document {
-  name: string;
-  email: string;
-  passwordHash: string;
-  role: 'Admin' | 'Manager' | 'Contributor';
-  refreshToken?: string;
-  resetPasswordToken?: string;
-  resetPasswordExpires?: Date;
-  comparePassword(candidatePassword: string): Promise<boolean>;
-}
+describe('authentication routes', () => {
+  it('mounts the login route and validates missing credentials', async () => {
+    const server = createApp().listen(0);
 
-const UserSchema = new Schema<IUser>(
-  {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    passwordHash: { type: String, required: true },
-    role: { type: String, enum: ['Admin', 'Manager', 'Contributor'], default: 'Contributor' },
-    refreshToken: { type: String },
-    resetPasswordToken: { type: String },
-    resetPasswordExpires: { type: Date }
-  },
-  { timestamps: true }
-);
+    try {
+      await new Promise<void>((resolve, reject) => {
+        server.once('listening', resolve).once('error', reject);
+      });
 
-// Compare password helper method
-UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.passwordHash);
-};
+      const address = server.address() as AddressInfo;
+      const response = await fetch(`http://127.0.0.1:${address.port}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
 
-export const User: Model<IUser> = model<IUser>('User', UserSchema);
+      expect(response.status).toBe(400);
+      expect(await response.json()).toMatchObject({
+        success: false,
+        message: 'Email and password are required.'
+      });
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => error ? reject(error) : resolve());
+      });
+    }
+  });
+});

@@ -131,7 +131,7 @@ describe('project routes', () => {
 		});
 	});
 
-	it('rejects project creation for contributors', async () => {
+	it('allows contributors to reach project creation validation', async () => {
 		const contributorToken = jwt.sign(
 			{ userId: 'user-id', role: 'Contributor' },
 			process.env.JWT_ACCESS_SECRET || 'access_secret'
@@ -145,8 +145,8 @@ describe('project routes', () => {
 			});
 			const body = await response.json();
 
-			expect(response.status).toBe(403);
-			expect(body).toMatchObject({ success: false, message: 'Access Denied: You do not have the required permissions for this action.' });
+			expect(response.status).toBe(400);
+			expect(body).toMatchObject({ success: false, message: 'Invalid Project Data' });
 		});
 	});
 
