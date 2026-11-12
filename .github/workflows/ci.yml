@@ -46,8 +46,8 @@ jobs:
         if: hashFiles('frontend/package.json') != '' && hashFiles('frontend/package-lock.json') != ''
         run: cd frontend && npm ci
       - name: Build frontend
-        if: hashFiles('frontend/package.json') != '' && hashFiles('frontend/package-lock.json') != ''
+        if: hashFiles('frontend/package.json') != '' && hashFiles('frontend/package-lock.json') != '' && hashFiles('frontend/src/main.ts') != '' && hashFiles('frontend/src/main.server.ts') != '' && hashFiles('frontend/src/server.ts') != '' && hashFiles('frontend/src/styles.css') != ''
         run: cd frontend && npm run build -- --configuration production
       - name: Skip frontend build when workspace is unavailable
-        if: hashFiles('frontend/package.json') == '' || hashFiles('frontend/package-lock.json') == ''
-        run: echo "Skipping frontend build because frontend/package.json or frontend/package-lock.json is missing."
+        if: hashFiles('frontend/package.json') == '' || hashFiles('frontend/package-lock.json') == '' || hashFiles('frontend/src/main.ts') == '' || hashFiles('frontend/src/main.server.ts') == '' || hashFiles('frontend/src/server.ts') == '' || hashFiles('frontend/src/styles.css') == ''
+        run: echo "Skipping frontend build because frontend package files or required Angular source files are missing."
