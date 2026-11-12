@@ -4,6 +4,7 @@
 /dist
 /frontend/dist
 /backend/dist
+/backend/.env
 /tmp
 /out-tsc
 /bazel-out
