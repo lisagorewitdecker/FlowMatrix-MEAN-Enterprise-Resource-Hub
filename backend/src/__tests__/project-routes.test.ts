@@ -131,23 +131,33 @@ describe('project routes', () => {
 		});
 	});
 
-	it('rejects project creation for contributors', async () => {
+	it('allows contributors to create projects', async () => {
 		const contributorToken = jwt.sign(
 			{ userId: 'user-id', role: 'Contributor' },
 			process.env.JWT_ACCESS_SECRET || 'access_secret'
 		);
+		const savedProject = { _id: 'project-id', title: 'Roadmap' };
+		const save = jest.spyOn(Project.prototype, 'save').mockResolvedValue(savedProject as never);
 
 		await withServer(async (baseUrl) => {
 			const response = await fetch(`${baseUrl}/api/projects`, {
 				method: 'POST',
 				headers: { Authorization: `Bearer ${contributorToken}`, 'Content-Type': 'application/json' },
-				body: JSON.stringify({ title: 'Roadmap' })
+				body: JSON.stringify({
+					title: 'Roadmap',
+					description: 'Project plan',
+					owner: '507f1f77bcf86cd799439011',
+					budget: 100,
+					deadline: '2030-01-01T00:00:00.000Z'
+				})
 			});
 			const body = await response.json();
 
-			expect(response.status).toBe(403);
-			expect(body).toMatchObject({ success: false, message: 'Access Denied: You do not have the required permissions for this action.' });
+			expect(response.status).toBe(201);
+			expect(body).toEqual({ success: true, data: savedProject });
 		});
+
+		expect(save).toHaveBeenCalledTimes(1);
 	});
 
 	it('deletes a project for administrators', async () => {

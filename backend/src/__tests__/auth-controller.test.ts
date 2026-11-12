@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -160,7 +161,7 @@ describe('Auth Controller Unit Tests', () => {
 
     it('should return 401 if user does not exist', async () => {
       mockReq = { body: { email: 'missing@example.com', password: 'Password123!' } };
-      MockedUser.findOne.mockResolvedValue(null);
+      MockedUser.findOne.mockReturnValue({ select: jest.fn().mockResolvedValue(null) });
 
       await login(mockReq as Request, mockRes as Response);
 
@@ -177,7 +178,7 @@ describe('Auth Controller Unit Tests', () => {
         email: 'user@example.com',
         comparePassword: jest.fn().mockResolvedValue(false)
       };
-      MockedUser.findOne.mockResolvedValue(mockUser);
+      MockedUser.findOne.mockReturnValue({ select: jest.fn().mockResolvedValue(mockUser) });
 
       await login(mockReq as Request, mockRes as Response);
 
@@ -197,7 +198,7 @@ describe('Auth Controller Unit Tests', () => {
         save: jest.fn().mockResolvedValue(true)
       };
 
-      MockedUser.findOne.mockResolvedValue(mockUser);
+      MockedUser.findOne.mockReturnValue({ select: jest.fn().mockResolvedValue(mockUser) });
       MockedJwt.sign
         .mockReturnValueOnce('mock_access_token')
         .mockReturnValueOnce('mock_refresh_token');
@@ -257,7 +258,8 @@ describe('Auth Controller Unit Tests', () => {
         _id: 'user_456',
         email: 'alex@company.com',
         role: 'Manager',
-        name: 'Alex'
+        name: 'Alex',
+        refreshToken: 'valid_refresh_token'
       });
       MockedJwt.sign.mockReturnValue('new_access_token');
 

@@ -48,7 +48,7 @@ export const signup = async (req: Request, res: Response): Promise<Response> => 
       name: defaultName,
       email: normalizedEmail,
       passwordHash,
-      role: 'Admin'
+      role: 'Contributor'
     });
 
     return res.status(201).json({
