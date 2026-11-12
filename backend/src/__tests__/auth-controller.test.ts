@@ -12,7 +12,7 @@ import {
 import { User } from '../models/User.model';
 
 // Mock module implementations
-jest.mock('../../models/User.model');
+jest.mock('../models/User.model');
 jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
 
@@ -402,4 +402,3 @@ describe('Auth Controller Unit Tests', () => {
     });
   });
 });
-
