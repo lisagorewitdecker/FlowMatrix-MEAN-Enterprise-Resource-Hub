@@ -1,0 +1,65 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <h1 class="auth-title">Create Account</h1>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-field">
+        <label for="email">Email Address</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-input"
+          placeholder="name@company.com"
+        />
+        <small class="field-error" *ngIf="f['email'].touched && f['email'].invalid">
+          A valid email is required.
+        </small>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="form-input"
+          placeholder="••••••••"
+        />
+        <small class="field-error" *ngIf="f['password'].touched && f['password'].errors?.['passwordStrength']">
+          Must be 8+ chars with uppercase, lowercase, number, and special character.
+        </small>
+      </div>
+
+      <div class="form-field">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          class="form-input"
+          placeholder="••••••••"
+        />
+        <small class="field-error" *ngIf="signupForm.hasError('passwordMismatch') && f['confirmPassword'].touched">
+          Passwords do not match.
+        </small>
+      </div>
+
+      <div class="auth-error" role="alert" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="auth-success" role="status" *ngIf="successMessage">{{ successMessage }}</div>
+
+      <button
+        type="submit"
+        [disabled]="signupForm.invalid || isSubmitting"
+        class="auth-submit"
+      >
+        {{ isSubmitting ? 'Creating account...' : 'Sign Up' }}
+      </button>
+    </form>
+
+    <div class="card-footer">
+      <span>Already have an account?</span>
+      <a routerLink="/login" class="secondary-btn">Back to Sign In</a>
+    </div>
+  </section>
+</main>

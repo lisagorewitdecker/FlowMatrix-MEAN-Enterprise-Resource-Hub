@@ -1,0 +1,10 @@
+{
+  "routes": {
+    "/analytics": {},
+    "/forgot-password": {},
+    "/login": {},
+    "/projects": {},
+    "/reset-password": {},
+    "/signup": {}
+  }
+}
