@@ -287,7 +287,7 @@ export interface StatusMetric {
 
     .kpi-hint {
       font-size: 0.75rem;
-      color: #64748b;
+      color: #94a3b8;
     }
 
     /* Distribution Progress Bar */
