@@ -4,6 +4,8 @@ FlowMatrix is an enterprise resource hub built with the MEAN stack. It brings pr
 
 ## Repository Structure
 
+The structure and setup/build/test commands below describe a planned application; the frontend and backend workspaces and supporting files shown are not present in this checkout, so the commands are not currently runnable.
+
 ```text
 flowmatrix/
 ├── backend/
