@@ -1,6 +1,10 @@
-# FlowMatrix - Projects, Analytics & KPI's, Kanban Board
+# FlowMatrix — Projects, Analytics & KPIs, Kanban Board
+
+FlowMatrix is an enterprise resource hub built with the MEAN stack. It brings project management, analytics and key performance indicators (KPIs), and a Kanban board together in one application.
 
 ## Repository Structure
+
+The structure and setup/build/test commands below describe a planned application; the frontend and backend workspaces and supporting files shown are not present in this checkout, so the commands are not currently runnable.
 
 ```text
 flowmatrix/
@@ -92,6 +96,7 @@ flowchart TD
         ProjCtrl[Project Controller]
         AnalytCtrl[Faceted Analytics Controller]
         AuthCtrl[Auth Controller]
+
         
         AuthMid --> ProjCtrl
         AuthMid --> AnalytCtrl
@@ -102,6 +107,12 @@ flowchart TD
         Mongo[(MongoDB 7.0 Multi-Index Engine)]
     end
 
+    Interceptors -->|JWT API Calls| Nginx
+    Nginx -->|Reverse Proxy :5000| AuthMid
+    ProjCtrl -->|CRUD Operations| Mongo
+    AnalytCtrl -->|$facet Aggregations| Mongo
+    AuthCtrl -->|Bcrypt & Refresh Tokens| Mongo
+```
     Interceptors -->|Bearer JWT / API Calls| Nginx
     Nginx -->|Reverse Proxy :5000| AuthMid
     ProjCtrl -->|CRUD Operations| Mongo
