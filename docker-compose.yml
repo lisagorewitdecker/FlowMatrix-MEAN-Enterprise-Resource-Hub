@@ -33,8 +33,6 @@ services:
   mongodb:
     image: mongo:latest
     container_name: flowmatrix_mongo
-    ports:
-      - "27017:27017"
     networks:
       - flowmatrix-net
     volumes:
