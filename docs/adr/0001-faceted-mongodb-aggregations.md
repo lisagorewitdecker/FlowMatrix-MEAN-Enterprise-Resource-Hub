@@ -4,18 +4,18 @@
 Accepted
 
 ## Context
-The executive analytics dashboard requires portfolio metrics, capital distribution across four lifecycle phases, overdue risk calculations, and completion percentages.
+The planned executive analytics dashboard will need portfolio metrics, capital distribution across four lifecycle phases, overdue risk calculations, and completion percentages.
 
-Querying MongoDB multiple times sequentially (e.g., `countDocuments()`, `aggregate()`, `find()`) caused network overhead and inconsistent point-in-time snapshots during rapid status updates.
+If these metrics are computed with multiple sequential MongoDB queries (e.g., `countDocuments()`, `aggregate()`, `find()`), the additional network overhead could increase latency and produce inconsistent point-in-time snapshots during rapid status updates.
 
 ## Decision
-We consolidated all analytics computations into a single MongoDB `$facet` aggregation pipeline within `analytics.controller.ts`.
+Use a single MongoDB `$facet` aggregation pipeline for the analytics computations when implementing `analytics.controller.ts`.
 
 ## Consequences
 ### Positive
-* **Single Round-Trip:** MongoDB resolves portfolio totals, status breakdowns, and date-comparison velocities in a single database operation.
-* **Point-in-Time Consistency:** All KPI metrics derive from the same database snapshot.
-* **Calculated Velocity:** Overdue project counts are resolved directly on the database engine using `$cond` expressions against `new Date()`.
+* **Single Round-Trip:** MongoDB can resolve portfolio totals, status breakdowns, and date-comparison velocities in a single database operation.
+* **Point-in-Time Consistency:** All KPI metrics can derive from the same database snapshot.
+* **Calculated Velocity:** Overdue project counts can be resolved directly on the database engine using `$cond` expressions against `new Date()`.
 
 ### Negative / Trade-offs
-* Pipeline complexity is higher than simple Mongoose queries, requiring thorough integration unit testing with mocked aggregation responses.
+* Pipeline complexity will be higher than simple Mongoose queries, requiring thorough integration testing with mocked aggregation responses.
