@@ -1,0 +1,46 @@
+
+
+services:
+  # 2. Node.js / Express Backend Service
+  backend:
+    build: ./backend
+    container_name: flowmatrix_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/flowmatrix
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET to a strong unique secret}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET to a strong unique secret}
+    depends_on:
+      - mongodb
+    networks:
+      - flowmatrix-net
+
+# 3 Pass PORT to frontend in docker-compose.yml
+  frontend:
+    build: ./frontend
+    container_name: flowmatrix_frontend
+    ports:
+      - "4200:4200"
+    environment:
+      - PORT=4200
+    depends_on:
+      - backend
+    networks:
+      - flowmatrix-net
+
+  mongodb:
+    image: mongo:latest
+    container_name: flowmatrix_mongo
+    networks:
+      - flowmatrix-net
+    volumes:
+      - mongo_data:/data/db
+
+networks:
+  flowmatrix-net:
+    driver: bridge
+
+volumes:
+  mongo_data:
