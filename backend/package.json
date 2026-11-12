@@ -49,5 +49,8 @@
     "fsevents@2.3.3": true,
     "mongodb-memory-server@11.3.0": true,
     "@scarf/scarf@1.4.0": true
+  },
+  "overrides": {
+    "minimatch": "^11.0.1"
   }
 }
