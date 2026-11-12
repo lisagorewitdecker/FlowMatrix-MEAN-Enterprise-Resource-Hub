@@ -323,7 +323,7 @@ import { KanbanBoardComponent } from '../kanban-board/kanban-board.component';
       display: flex;
       justify-content: space-between;
       font-size: 0.8rem;
-      color: #64748b;
+      color: #94a3b8;
     }
 
     .modal-backdrop {
