@@ -132,13 +132,10 @@ describe('project routes', () => {
 	});
 
 	it('allows contributors to reach project creation validation', async () => {
-	it('allows contributors to create projects', async () => {
 		const contributorToken = jwt.sign(
 			{ userId: 'user-id', role: 'Contributor' },
 			process.env.JWT_ACCESS_SECRET || 'access_secret'
 		);
-		const savedProject = { _id: 'project-id', title: 'Roadmap' };
-		const save = jest.spyOn(Project.prototype, 'save').mockResolvedValue(savedProject as never);
 
 		await withServer(async (baseUrl) => {
 			const response = await fetch(`${baseUrl}/api/projects`, {
@@ -151,6 +148,20 @@ describe('project routes', () => {
 			expect(response.status).toBe(400);
 			expect(body).toMatchObject({ success: false, message: 'Invalid Project Data' });
 		});
+	});
+
+	it('allows contributors to create projects', async () => {
+		const contributorToken = jwt.sign(
+			{ userId: 'user-id', role: 'Contributor' },
+			process.env.JWT_ACCESS_SECRET || 'access_secret'
+		);
+		const savedProject = { _id: 'project-id', title: 'Roadmap' };
+		const save = jest.spyOn(Project.prototype, 'save').mockResolvedValue(savedProject as never);
+
+		await withServer(async (baseUrl) => {
+			const response = await fetch(`${baseUrl}/api/projects`, {
+				method: 'POST',
+				headers: { Authorization: 'Bearer ' + contributorToken, 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					title: 'Roadmap',
 					description: 'Project plan',
