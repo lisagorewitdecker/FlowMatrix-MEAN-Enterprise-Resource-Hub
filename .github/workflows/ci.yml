@@ -18,14 +18,19 @@ jobs:
         if: hashFiles('backend/package.json') != '' && hashFiles('backend/package-lock.json') != ''
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
       - name: Install backend dependencies
         if: hashFiles('backend/package.json') != '' && hashFiles('backend/package-lock.json') != ''
         run: cd backend && npm ci
+      - name: Build backend
+        if: hashFiles('backend/package.json') != '' && hashFiles('backend/package-lock.json') != ''
+        run: cd backend && npm run build
       - name: Test backend
         if: hashFiles('backend/package.json') != '' && hashFiles('backend/package-lock.json') != ''
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
         run: cd backend && npm test -- --coverage
       - name: Skip backend tests when workspace is unavailable
         if: hashFiles('backend/package.json') == '' || hashFiles('backend/package-lock.json') == ''
