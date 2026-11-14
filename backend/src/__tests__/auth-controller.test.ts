@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 /// <reference types="jest" />
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
@@ -12,6 +13,8 @@ import {
 } from '../controllers/auth.controller';
 import { User } from '../models/User.model';
 
+type AnyMock = jest.Mock<(...args: any[]) => any>;
+
 // Mock module implementations
 jest.mock('../models/User.model');
 jest.mock('bcryptjs');
@@ -19,20 +22,20 @@ jest.mock('jsonwebtoken');
 
 // Type-safe mock adapters that decouple tests from Mongoose Query internal overloads
 const MockedUser = User as unknown as {
-  findOne: jest.Mock;
-  findById: jest.Mock;
-  create: jest.Mock;
+  findOne: AnyMock;
+  findById: AnyMock;
+  create: AnyMock;
 };
 
 const MockedBcrypt = bcrypt as unknown as {
-  hash: jest.Mock;
-  compare: jest.Mock;
-  genSalt: jest.Mock;
+  hash: AnyMock;
+  compare: AnyMock;
+  genSalt: AnyMock;
 };
 
 const MockedJwt = jwt as unknown as {
-  sign: jest.Mock;
-  verify: jest.Mock;
+  sign: AnyMock;
+  verify: AnyMock;
 };
 
 describe('Auth Controller Unit Tests', () => {
@@ -41,10 +44,10 @@ describe('Auth Controller Unit Tests', () => {
 
   const createMockResponse = (): Partial<Response> => {
     const res: Partial<Response> = {};
-    res.status = jest.fn().mockReturnValue(res);
-    res.json = jest.fn().mockReturnValue(res);
-    res.cookie = jest.fn().mockReturnValue(res);
-    res.clearCookie = jest.fn().mockReturnValue(res);
+    res.status = jest.fn<Response['status']>().mockReturnValue(res as Response);
+    res.json = jest.fn<Response['json']>().mockReturnValue(res as Response);
+    res.cookie = jest.fn<Response['cookie']>().mockReturnValue(res as Response);
+    res.clearCookie = jest.fn<Response['clearCookie']>().mockReturnValue(res as Response);
     return res;
   };
 
@@ -161,7 +164,7 @@ describe('Auth Controller Unit Tests', () => {
 
     it('should return 401 if user does not exist', async () => {
       mockReq = { body: { email: 'missing@example.com', password: 'Password123!' } };
-      MockedUser.findOne.mockReturnValue({ select: jest.fn().mockResolvedValue(null) });
+      MockedUser.findOne.mockReturnValue({ select: jest.fn().mockReturnValue(null) });
 
       await login(mockReq as Request, mockRes as Response);
 
@@ -176,10 +179,11 @@ describe('Auth Controller Unit Tests', () => {
       const mockUser = {
         _id: 'user_1',
         email: 'user@example.com',
-        comparePassword: jest.fn().mockResolvedValue(false)
+        comparePassword: jest.fn<(password: string) => Promise<boolean>>().mockResolvedValue(false)
       };
-      MockedUser.findOne.mockReturnValue({ select: jest.fn().mockResolvedValue(mockUser) });
-
+      MockedUser.findOne.mockReturnValue({
+        select: jest.fn().mockReturnValue(mockUser)
+      });
       await login(mockReq as Request, mockRes as Response);
 
       expect(mockUser.comparePassword).toHaveBeenCalledWith('WrongPassword123!');
@@ -194,11 +198,13 @@ describe('Auth Controller Unit Tests', () => {
         name: 'Alex Developer',
         role: 'Admin',
         refreshToken: '',
-        comparePassword: jest.fn().mockResolvedValue(true),
-        save: jest.fn().mockResolvedValue(true)
+        comparePassword: jest.fn<(password: string) => Promise<boolean>>().mockResolvedValue(true),
+        save: jest.fn<() => Promise<boolean>>().mockResolvedValue(true)
       };
 
-      MockedUser.findOne.mockReturnValue({ select: jest.fn().mockResolvedValue(mockUser) });
+      MockedUser.findOne.mockReturnValue({
+        select: jest.fn().mockReturnValue(mockUser)
+      });
       MockedJwt.sign
         .mockReturnValueOnce('mock_access_token')
         .mockReturnValueOnce('mock_refresh_token');
@@ -308,7 +314,7 @@ describe('Auth Controller Unit Tests', () => {
         email: 'user@example.com',
         resetPasswordToken: undefined,
         resetPasswordExpires: undefined,
-        save: jest.fn().mockResolvedValue(true)
+        save: jest.fn<() => Promise<boolean>>().mockResolvedValue(true)
       };
 
       MockedUser.findOne.mockResolvedValue(mockUser);
@@ -369,7 +375,7 @@ describe('Auth Controller Unit Tests', () => {
         passwordHash: 'old_hash',
         resetPasswordToken: 'some_hashed_token',
         resetPasswordExpires: new Date(Date.now() + 60000),
-        save: jest.fn().mockResolvedValue(true)
+        save: jest.fn<() => Promise<boolean>>().mockResolvedValue(true)
       };
 
       MockedUser.findOne.mockResolvedValue(mockUser);
