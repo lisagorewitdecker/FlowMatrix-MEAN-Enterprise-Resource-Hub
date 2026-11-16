@@ -44,7 +44,7 @@ const signup = async (req, res) => {
             name: defaultName,
             email: normalizedEmail,
             passwordHash,
-            role: 'Admin'
+            role: 'Contributor'
         });
         return res.status(201).json({
             success: true,
@@ -77,7 +77,10 @@ const login = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Email and password are required.' });
         }
         const normalizedEmail = email.toLowerCase().trim();
-        const user = await User_model_1.User.findOne({ email: normalizedEmail });
+        const user = await User_model_1.User.findOne({ email: normalizedEmail }).select('+passwordHash +password');
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'Invalid email or password.' });
+        }
         if (!user) {
             return res.status(401).json({ success: false, message: 'Invalid email or password.' });
         }

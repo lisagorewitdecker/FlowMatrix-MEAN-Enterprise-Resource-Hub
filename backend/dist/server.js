@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.startServer = startServer;
 const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config(); // Must be at the very top!
+dotenv_1.default.config();
 const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = require("./app");
 async function startServer() {
